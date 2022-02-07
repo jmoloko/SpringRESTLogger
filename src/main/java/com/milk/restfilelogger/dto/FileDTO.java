@@ -1,7 +1,6 @@
 package com.milk.restfilelogger.dto;
 
 import com.milk.restfilelogger.entity.FileEntity;
-import com.milk.restfilelogger.entity.UserEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -4,15 +4,10 @@ package com.milk.restfilelogger.entity;
  * @author Jack Milk
  */
 public enum Permission {
-    USERS_READ("users:read"),
-    USERS_WRITE("users:write"),
-    FILES_READ("files:read"),
-    FILES_WRITE("files:write"),
-    FILES_UPLOAD("files:upload"),
-    FILES_DOWNLOAD("files:download"),
-    FILES_DELETE("files:delete"),
-    EVENTS_READ("events:read"),
-    EVENTS_WRITE("events:write");
+
+    LEVEL_LOW("level:low"),
+    LEVEL_MIDDLE("level:middle"),
+    LEVEL_HIGH("level:high");
 
     private final String permission;
 

@@ -1,6 +1,7 @@
 package com.milk.restfilelogger.service.implementation;
 
 import com.milk.restfilelogger.dto.UserDTO;
+import com.milk.restfilelogger.entity.Status;
 import com.milk.restfilelogger.entity.UserEntity;
 import com.milk.restfilelogger.exception.UserAlreadyExistException;
 import com.milk.restfilelogger.exception.UserNotFoundException;
@@ -18,42 +19,59 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
-
-    @Override
-    public List<UserDTO> getAll() {
-        return userRepository.findAll().stream().map(UserDTO::toDto).collect(Collectors.toList());
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public UserDTO getById(Long id) throws UserNotFoundException {
-        return UserDTO.toDto(userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User NOT Found")));
+    public List<UserEntity> getAll() {
+        return userRepository.findAll();
     }
 
     @Override
-    public UserDTO update(UserEntity user, Long id) throws UserAlreadyExistException, UserNotFoundException {
-        UserEntity uUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User NOT Found"));
-        if (userRepository.findByName(user.getName()) != null ){
-            throw new UserAlreadyExistException("User already exist!");
+    public Long getIdByEmail(String email) throws UserNotFoundException {
+        Long id = userRepository.getIdByEmail(email);
+        if (id == null) {
+            throw new UserNotFoundException("User NOT found");
         }
-
-        uUser.setName(user.getName());
-        uUser.setRole(user.getRole());
-        return UserDTO.toDto(userRepository.save(uUser));
-    }
-
-    @Override
-    public UserDTO registration(UserEntity user) throws  UserAlreadyExistException{
-        if (userRepository.findByName(user.getName()) != null ){
-            throw new UserAlreadyExistException("User already exist!");
-        }
-        return UserDTO.toDto(userRepository.save(user));
-    }
-
-    @Override
-    public Long delete(Long id) {
-        userRepository.deleteById(id);
         return id;
+    }
+
+    @Override
+    public UserEntity getById(Long id) throws UserNotFoundException {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User NOT Found"));
+    }
+
+    @Override
+    public UserEntity getByEmail(String email) throws UserNotFoundException {
+        return userRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException("User NOT Found"));
+    }
+
+    @Override
+    public UserEntity update(UserEntity updatedUser, Long id) throws UserAlreadyExistException, UserNotFoundException {
+        UserEntity currentUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User NOT Found"));
+        if (userRepository.findByEmail(updatedUser.getEmail()).isPresent() && !id.equals(currentUser.getId())){
+            throw new UserAlreadyExistException("User already exist!");
+        }
+
+        return userRepository.save(updatedUser);
+    }
+
+    @Override
+    public UserEntity save(UserEntity user) throws  UserAlreadyExistException{
+        if (userRepository.findByEmail(user.getEmail()).isPresent()){
+            throw new UserAlreadyExistException("User already exist!");
+        }
+        return userRepository.save(user);
+    }
+
+    @Override
+    public UserEntity delete(Long id) throws UserNotFoundException, UserAlreadyExistException {
+        UserEntity deletedUser =  userRepository.getById(id);
+        deletedUser.setStatus(Status.DELETED);
+        return update(deletedUser, id);
     }
 }

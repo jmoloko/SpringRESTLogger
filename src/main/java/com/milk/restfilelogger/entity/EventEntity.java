@@ -1,5 +1,6 @@
 package com.milk.restfilelogger.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +16,14 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class EventEntity extends BaseEntity{
+
+    public EventEntity(UserEntity user, FileEntity file, Occasion occasion) {
+        this.user = user;
+        this.file = file;
+        this.occasion = occasion;
+    }
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -26,7 +34,9 @@ public class EventEntity extends BaseEntity{
     private FileEntity file;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "occasion")
     private Occasion occasion;
 
+    @Column(name = "date")
     private LocalDateTime date;
 }

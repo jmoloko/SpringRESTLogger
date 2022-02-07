@@ -1,6 +1,5 @@
 package com.milk.restfilelogger.service.implementation;
 
-import com.milk.restfilelogger.dto.FileDTO;
 import com.milk.restfilelogger.entity.FileEntity;
 import com.milk.restfilelogger.exception.FileAlreadyExistException;
 import com.milk.restfilelogger.exception.FileNotFoundException;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Jack Milk
@@ -18,44 +16,49 @@ import java.util.stream.Collectors;
 @Service
 public class FileServiceImpl implements FileService {
 
+
+    private final FileRepository fileRepository;
+
     @Autowired
-    FileRepository fileRepository;
-
-    @Override
-    public List<FileDTO> getAll() {
-        return fileRepository.findAll().stream().map(FileDTO::toDto).collect(Collectors.toList());
+    public FileServiceImpl(FileRepository fileRepository) {
+        this.fileRepository = fileRepository;
     }
 
     @Override
-    public FileDTO getFileById(Long id) throws FileNotFoundException {
-        return FileDTO.toDto(fileRepository.findById(id).orElseThrow(() -> new FileNotFoundException("File NOT Found")));
-    }
-
-    public List<FileDTO> getFilesByUserId(Long id) {
-        return fileRepository.findAllByUserId(id).stream().map(FileDTO::toDto).collect(Collectors.toList());
+    public List<FileEntity> getAll() {
+        return fileRepository.findAll();
     }
 
     @Override
-    public FileDTO renameFile(FileEntity file, Long id) throws FileAlreadyExistException, FileNotFoundException {
-        FileEntity uFile = fileRepository.findById(id).orElseThrow(() -> new FileNotFoundException("File NOT Found"));
-        if (fileRepository.findByName(file.getName()) != null ){
+    public FileEntity getFileById(Long id) throws FileNotFoundException {
+        return fileRepository.findById(id).orElseThrow(() -> new FileNotFoundException("File NOT Found"));
+    }
+
+    public List<FileEntity> getFilesByUserId(Long id) {
+        return fileRepository.findAllByUserId(id);
+    }
+
+    @Override
+    public FileEntity renameFile(FileEntity file) throws FileAlreadyExistException, FileNotFoundException {
+        FileEntity uFile = fileRepository.findById(file.getId()).orElseThrow(() -> new FileNotFoundException("File NOT Found"));
+        if (fileRepository.findByName(file.getName()).isPresent() && file.getPath().equals(uFile.getPath())){
             throw new FileAlreadyExistException("File already exist!");
         }
-        uFile.setName(file.getName());
-        return FileDTO.toDto(fileRepository.save(uFile));
+
+        return fileRepository.save(file);
     }
 
     @Override
-    public FileDTO save(FileEntity file) throws FileAlreadyExistException {
-        if (fileRepository.findByName(file.getName()) != null ){
+    public FileEntity save(FileEntity file) throws FileAlreadyExistException {
+        if (fileRepository.findByName(file.getName()).isPresent()){
             throw new FileAlreadyExistException("File already exist!");
         }
-        return FileDTO.toDto(fileRepository.save(file));
+        return fileRepository.save(file);
     }
 
     @Override
-    public Long delete(Long id) {
+    public void delete(Long id) {
         fileRepository.deleteById(id);
-        return id;
     }
+
 }

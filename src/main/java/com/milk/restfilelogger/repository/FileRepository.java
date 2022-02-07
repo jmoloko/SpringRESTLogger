@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Jack Milk
@@ -14,5 +15,5 @@ import java.util.List;
 public interface FileRepository extends JpaRepository<FileEntity, Long> {
     @Query("SELECT DISTINCT f FROM FileEntity as f LEFT JOIN EventEntity e on f.id = e.file.id WHERE e.user.id = ?1")
     List<FileEntity> findAllByUserId(Long id);
-    FileEntity findByName(String filename);
+    Optional<FileEntity> findByName(String filename);
 }

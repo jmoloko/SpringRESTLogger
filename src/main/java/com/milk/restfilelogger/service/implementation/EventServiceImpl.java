@@ -1,6 +1,5 @@
 package com.milk.restfilelogger.service.implementation;
 
-import com.milk.restfilelogger.dto.EventDTO;
 import com.milk.restfilelogger.entity.EventEntity;
 import com.milk.restfilelogger.exception.EventNotFoundException;
 import com.milk.restfilelogger.repository.EventRepository;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Jack Milk
@@ -17,47 +15,40 @@ import java.util.stream.Collectors;
 @Service
 public class EventServiceImpl implements EventService {
 
+    private final EventRepository eventRepository;
+
     @Autowired
-    EventRepository eventRepository;
-
-    @Override
-    public List<EventDTO> getAll() {
-        return eventRepository.findAll().stream().map(EventDTO::toDto).collect(Collectors.toList());
+    public EventServiceImpl(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
     }
 
     @Override
-    public EventDTO getEventById(Long id) throws EventNotFoundException {
-        return EventDTO.toDto(eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException("Event NOT Found")));
+    public List<EventEntity> getAll() {
+        return eventRepository.findAll();
     }
 
     @Override
-    public List<EventDTO> getEventsByUserId(Long id) {
-        return eventRepository.getAllByUserId(id).stream().map(EventDTO::toDto).collect(Collectors.toList());
+    public EventEntity getEventById(Long id) throws EventNotFoundException {
+        return eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException("Event NOT Found"));
     }
 
     @Override
-    public List<EventDTO> getEventsByFileId(Long id) {
-        return eventRepository.getAllByFileId(id).stream().map(EventDTO::toDto).collect(Collectors.toList());
+    public List<EventEntity> getEventsByUserId(Long id) {
+        return eventRepository.getAllByUserId(id);
     }
 
     @Override
-    public EventDTO save(EventEntity event) {
-        return EventDTO.toDto(eventRepository.save(event));
+    public List<EventEntity> getEventsByFileId(Long id) {
+        return eventRepository.getAllByFileId(id);
     }
 
     @Override
-    public EventDTO update(EventEntity event, Long id) throws EventNotFoundException {
-        EventEntity uEvent = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException("Event NOT Found"));
-        uEvent.setUser(event.getUser());
-        uEvent.setFile(event.getFile());
-        uEvent.setDate(event.getDate());
-        uEvent.setOccasion(event.getOccasion());
-        return EventDTO.toDto(eventRepository.save(uEvent));
+    public EventEntity save(EventEntity event) {
+        return eventRepository.save(event);
     }
 
     @Override
-    public Long delete(Long id) {
+    public void delete(Long id) {
         eventRepository.deleteById(id);
-        return id;
     }
 }
