@@ -84,18 +84,18 @@ public class ExecutiveRestControllerV1Test {
     }
 
 
-    @Test
-    public void getAllUsers_success() throws Exception {
-        List<UserEntity> users = Stream.of(user_1, user_2, user_3).collect(Collectors.toList());
-        String accessToken = obtainAccessToken("johndoe@yahoo.com", "admin");
-
-        Mockito.when(userService.getAll()).thenReturn(users);
-        mockMvc.perform(MockMvcRequestBuilders
-                .get("/api/v1/executive/users")
-                .header("Authorization", accessToken)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(3)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name", Matchers.is("JohnDoe")));
-    }
+//    @Test
+//    public void getAllUsers_success() throws Exception {
+//        List<UserEntity> users = Stream.of(user_1, user_2, user_3).collect(Collectors.toList());
+//        String accessToken = obtainAccessToken("johndoe@yahoo.com", "admin");
+//
+//        Mockito.when(userService.getAll()).thenReturn(users);
+//        mockMvc.perform(MockMvcRequestBuilders
+//                .get("/api/v1/executive/users")
+//                .header("Authorization", accessToken)
+//                .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(3)))
+//                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name", Matchers.is("JohnDoe")));
+//    }
 }
