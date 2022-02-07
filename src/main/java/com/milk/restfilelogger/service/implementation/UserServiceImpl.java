@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity delete(Long id) throws UserNotFoundException, UserAlreadyExistException {
-        UserEntity deletedUser =  userRepository.getById(id);
+        UserEntity deletedUser =  userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User NOT Found"));
         deletedUser.setStatus(Status.DELETED);
         return update(deletedUser, id);
     }
