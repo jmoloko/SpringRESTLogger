@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/jmoloko/SpringRESTLogger/tree/circleci-project-setup.svg?style=svg)](https://circleci.com/gh/jmoloko/SpringRESTLogger/tree/circleci-project-setup)
+[![CircleCI](https://circleci.com/gh/jmoloko/SpringRESTLogger/tree/main.svg?style=svg)](https://circleci.com/gh/jmoloko/SpringRESTLogger/tree/main)
 ## Spring REST application
 Implemented by the REST API, which interacts with the file storage and provides the ability to access files and download history.
 
