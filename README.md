@@ -49,4 +49,19 @@ Implemented by the REST API, which interacts with the file storage and provides 
 > * **POST:** /api/v1/user/files - upload a new file in the file system.
 > * **PUT:** /api/v1/user/files/{id} - rename a file in the file system and DB.
 > * **DELETE:** /api/v1/user/files/{id} - delete a file in the file system and DB.
+
+> * **GET:** /api/v1/executive/users - show all users.
+> * **GET:** /api/v1/executive/users/{id} - show user by id.
+> * **GET:** /api/v1/executive/users/{id}/events - show all events from user.
+> * **GET:** /api/v1/executive/users/{id}/files - show all files from user.
+> * **GET:** /api/v1/executive/users/{id}/files/{id} - show file by id from user.
+> * **GET:** /api/v1/executive/users/{id}/files/{id}/download - download file by id.
+> * **GET:** /api/v1/executive/users/{id}/files/{id}/events - all events from file by id.
+> * **POST:** /api/v1/executive/users - create new user only from ADMIN.
+> * **POST:** /api/v1/executive/users/{id} - update user, only from ADMIN.
+> * **POST:** /api/v1/executive/users/{id}/files - upload a new file from current user.
+> * **PUT:** /api/v1/executive/users/{id} - update current user.
+> * **DELETE:** /api/v1/executive/users/{id} - delete user and here all files and events, only from ADMIN.
+> * **DELETE:** /api/v1/executive/users/{id}/files/{id} - delete a file in the file system and DB.
+
 > 

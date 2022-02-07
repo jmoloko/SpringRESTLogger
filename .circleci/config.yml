@@ -1,5 +1,8 @@
 # Java Gradle CircleCI 2.0 configuration file
 # See: https://circleci.com/docs/2.0/language-java/
+orbs:
+  gradle: circleci/gradle@7.3
+
 version: 2
 
 # Define a job to be invoked later in a workflow.
