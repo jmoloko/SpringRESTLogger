@@ -44,3 +44,7 @@ jobs:
 
       # run tests!
       - run: gradle test
+
+      - run:
+          name: Send to CodeCov
+          command: bash <(curl -s https://codecov.io/bash)
