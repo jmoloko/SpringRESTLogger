@@ -1,9 +1,3 @@
-create table hibernate_sequence (
-    next_val bigint
-) engine=MyISAM;
-
-insert into hibernate_sequence values ( 1 );
-insert into hibernate_sequence values ( 1 );
 
 CREATE TABLE IF NOT EXISTS users
 (
@@ -13,14 +7,14 @@ CREATE TABLE IF NOT EXISTS users
     password VARCHAR(255) NOT NULL,
     role VARCHAR(25) NOT NULL DEFAULT 'USER',
     status VARCHAR(25)NOT NULL DEFAULT 'ACTIVE'
-) engine=MyISAM;
+);
 
 CREATE TABLE IF NOT EXISTS files
 (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     path VARCHAR(255) NOT NULL
-) engine=MyISAM;
+);
 
 CREATE TABLE IF NOT EXISTS events
 (
@@ -33,4 +27,4 @@ CREATE TABLE IF NOT EXISTS events
     occasion VARCHAR(25),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (file_id) REFERENCES files(id) ON DELETE SET NULL
-) engine=MyISAM;
+);

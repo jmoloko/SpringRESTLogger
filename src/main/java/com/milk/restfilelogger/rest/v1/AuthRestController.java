@@ -37,10 +37,10 @@ import java.util.Map;
 public class AuthRestController {
 
     private final AuthenticationManager authenticationManager;
-    private UserRepository userRepository;
-    private UserService userService;
-    private JwtTokenProvider jwtTokenProvider;
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public AuthRestController(AuthenticationManager authenticationManager, UserRepository userRepository, UserService userService, JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder) {

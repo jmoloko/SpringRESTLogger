@@ -1,0 +1,25 @@
+version: "3"
+services:
+  mysql_db:
+    image: "mysql:8"
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: file_logger
+      MYSQL_ROOT_PASSWORD: root
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 10s
+      retries: 10
+
+  api_service:
+    build: .
+    restart: on-failure
+    ports:
+      - 8080:8080
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+
+
