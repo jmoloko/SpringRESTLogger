@@ -12,7 +12,16 @@ Implemented by the REST API, which interacts with the file storage and provides 
 * Moderator - add and delete files
 * User - only reading all data except user
 
-**Technology:** _Java, MySQL, Spring (Ioc, Data, Security), AWS SDK, MySQL, Circleci, Docker, Junit, Mockito, Gradle._
+**Technology:** _Java, MySQL, Spring (Ioc, Data, Security), AWS SDK, Circleci, Docker, Junit, Mockito, Gradle._
+
+**Run in Docker:**
+```shell
+~> git clone https://github.com/jmoloko/SpringRESTLogger.git
+~> cd SpringRESTLogger
+~> ./gradlew clean build 
+~> docker-compose build
+~> docker-compose up
+```
 
 **Endpoints:**
 > **Start url - /api/v1**
