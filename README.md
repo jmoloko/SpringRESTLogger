@@ -1,5 +1,5 @@
 [![CircleCI](https://circleci.com/gh/jmoloko/SpringRESTLogger/tree/main.svg?style=svg)](https://circleci.com/gh/jmoloko/SpringRESTLogger/tree/main)
-[![codecov](https://codecov.io/gh/jmoloko/SpringRESTLogger/branch/main/graph/badge.svg?token=O0DQU9I1AI)](https://codecov.io/gh/jmoloko/SpringRESTLogger)
+[![codecov](https://codecov.io/gh/jmoloko/SpringRESTLogger/branch/main/graph/badge.svg?token=SFA680ME0R)](https://codecov.io/gh/jmoloko/SpringRESTLogger)
 ## Spring REST application
 Implemented by the REST API, which interacts with the file storage and provides the ability to access files and download history.
 

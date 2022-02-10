@@ -4,7 +4,9 @@
 
 
 version: 2
-
+orbs:
+  codecov: codecov/codecov@3.1.1
+#default: 2b10488b-f06d-491a-9d13-dba3e984708c
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
@@ -47,12 +49,7 @@ jobs:
 
       # run tests!
       - run: gradle test
-
-      - run:
-          name: Send to CodeCov
+      - checkout
+      - codecov/upload
           command: bash <(curl -s https://codecov.io/bash)
 
-test:
-  post:
-    - if [ -e ./gradlew ]; then ./gradlew jacocoTestReport;else gradle jacocoTestReport;fi
-    - bash <(curl -s https://codecov.io/bash)
