@@ -25,10 +25,9 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
     implementation 'mysql:mysql-connector-java:8.0.24'
+    implementation 'org.flywaydb:flyway-core:8.0.5'
     compileOnly 'org.projectlombok:lombok'
-    compileOnly('org.flywaydb:flyway-core:8.2.0')
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-//    runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
@@ -36,4 +35,16 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+// Run in console ./gradlew bootRunAws
+tasks.register('bootRunAws') {
+    group 'application'
+    description = 'Runs the Spring Boot application with the AWS profile'
+    doFirst {
+        tasks.bootRun.configure {
+            systemProperty 'spring.profiles.active', 'aws'
+        }
+    }
+    finalizedBy 'bootRun'
 }

@@ -10,14 +10,17 @@ services:
       MYSQL_ROOT_PASSWORD: root
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
-      timeout: 10s
-      retries: 10
+      timeout: 5s
+      retries: 5
 
   api_service:
     build: .
     restart: on-failure
     ports:
       - 8080:8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_db/file_logger?allowPublicKeyRetrieval=true&useSSL=false
+      UPLOAD_PATH: /media
     depends_on:
       mysql_db:
         condition: service_healthy

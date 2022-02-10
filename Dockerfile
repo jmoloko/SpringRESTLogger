@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:alpine
+FROM adoptopenjdk/openjdk11
 LABEL maintainer="mdevmann@yahoo.com"
 VOLUME /rest-app
 ADD build/libs/springrestfilelogger-0.0.1-SNAPSHOT.jar app.jar
