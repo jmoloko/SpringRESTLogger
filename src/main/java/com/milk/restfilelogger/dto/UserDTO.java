@@ -8,9 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
  * @author Jack Milk
  */
@@ -18,15 +15,15 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 public class UserDTO {
-    @JsonView({UserViews.ShortView.class})
+    @JsonView({JsonViews.ShortView.class})
     private Long id;
-    @JsonView({UserViews.ShortView.class})
+    @JsonView({JsonViews.ShortView.class})
     private String email;
-    @JsonView({UserViews.ShortView.class})
+    @JsonView({JsonViews.ShortView.class})
     private String name;
-    @JsonView({UserViews.FullView.class})
+    @JsonView({JsonViews.FullView.class})
     private Role role;
-    @JsonView({UserViews.FullView.class})
+    @JsonView({JsonViews.FullView.class})
     private Status status;
 
 

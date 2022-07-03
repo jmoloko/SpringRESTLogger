@@ -1,0 +1,19 @@
+language: java
+jdk:
+  - oraclejdk11
+
+sudo: false
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  email:
+    recipients:
+      - jackmoloko@yandex.ru
+    on_success: never
+    on_failure: always
+
+env:
+  global:
+    - CODECOV_TOKEN='e71fb522-e917-4294-a703-ebed8319e45d'

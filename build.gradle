@@ -2,7 +2,6 @@ plugins {
     id 'org.springframework.boot' version '2.4.0'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
-    id 'jacoco'
 }
 
 group = 'com.milk'
@@ -27,36 +26,14 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
     implementation 'mysql:mysql-connector-java:8.0.24'
     implementation 'org.flywaydb:flyway-core:8.0.5'
+    implementation 'me.paulschwarz:spring-dotenv:2.5.4'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.jacoco:org.jacoco.agent:0.8.7'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 }
 
 test {
     useJUnitPlatform()
-}
-
-jacocoTestReport {
-    reports {
-        xml.required = true
-        csv.required = false
-        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
-    }
-}
-
-check.dependsOn jacocoTestReport
-
-// Run in console ./gradlew bootRunAws
-tasks.register('bootRunAws') {
-    group 'application'
-    description = 'Runs the Spring Boot application with the AWS profile'
-    doFirst {
-        tasks.bootRun.configure {
-            systemProperty 'spring.profiles.active', 'aws'
-        }
-    }
-    finalizedBy 'bootRun'
 }

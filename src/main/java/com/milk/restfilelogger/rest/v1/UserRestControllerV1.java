@@ -1,7 +1,10 @@
 package com.milk.restfilelogger.rest.v1;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.milk.restfilelogger.dto.*;
+import com.milk.restfilelogger.dto.EventDTO;
+import com.milk.restfilelogger.dto.FileDTO;
+import com.milk.restfilelogger.dto.JsonViews;
+import com.milk.restfilelogger.dto.UserDTO;
 import com.milk.restfilelogger.entity.EventEntity;
 import com.milk.restfilelogger.entity.FileEntity;
 import com.milk.restfilelogger.entity.Occasion;
@@ -12,9 +15,8 @@ import com.milk.restfilelogger.exception.UserNotFoundException;
 import com.milk.restfilelogger.service.EventService;
 import com.milk.restfilelogger.service.FileService;
 import com.milk.restfilelogger.service.UserService;
-import com.milk.restfilelogger.service.implementation.UserServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import com.milk.restfilelogger.utils.Utils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -35,7 +37,7 @@ import java.util.stream.Collectors;
 /**
  * @author Jack Milk
  */
-
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/api/v1/user")
 public class UserRestControllerV1 {
@@ -43,19 +45,10 @@ public class UserRestControllerV1 {
     private final UserService userService;
     private final FileService fileService;
     private final EventService eventService;
-    @Value("${upload.path}")
-    private String defaultPath;
-
-    @Autowired
-    public UserRestControllerV1(UserServiceImpl userService, FileService fileService, EventService eventService) {
-        this.userService = userService;
-        this.fileService = fileService;
-        this.eventService = eventService;
-    }
-
+    private final Utils utils;
 
     @GetMapping
-    @JsonView(UserViews.ShortView.class)
+    @JsonView(JsonViews.ShortView.class)
     public ResponseEntity<?> getUserById(Authentication authentication) {
         String name = authentication.getName();
 
@@ -97,21 +90,8 @@ public class UserRestControllerV1 {
         UserEntity user;
         try {
             if (file != null) {
-                String fileName = file.getOriginalFilename();
                 user = userService.getByEmail(name);
-                String uploadPath = defaultPath + File.separator + user.getName().replace(" ", "");
-
-                File uploadDir = new File(uploadPath);
-                if (!uploadDir.exists()){
-                    uploadDir.mkdir();
-                }
-                file.transferTo(new File(uploadPath + File.separator + fileName));
-
-                FileEntity newFile = new FileEntity(fileName, uploadPath);
-                EventEntity newEvent = new EventEntity(user, newFile, Occasion.UPLOAD);
-                fileService.save(newFile);
-                eventService.save(newEvent);
-                return ResponseEntity.ok("File upload successfully.");
+                return utils.uploadFile(user, file);
             }
             return new ResponseEntity<>("No file content",  HttpStatus.NO_CONTENT);
         } catch (UserNotFoundException e) {

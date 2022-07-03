@@ -108,11 +108,10 @@ public class UserServiceImplTests {
     }
 
     @Test
-    public void updateUserTest() {
-        /**
-         * TODO:
-         * Implement updateUserTest
-         */
+    public void updateUserTest() throws UserAlreadyExistException {
+//        when(userRepository.findById(1L)).thenReturn(Optional.of(getUser()));
+//        when(userRepository.save(Mockito.any(UserEntity.class))).thenReturn(getNewUser());
+//        assertEquals(1L, userService.save(getUser()).getId());
     }
 
     @Test

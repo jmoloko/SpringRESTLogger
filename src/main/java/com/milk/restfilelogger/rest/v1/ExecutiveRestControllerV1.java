@@ -10,9 +10,9 @@ import com.milk.restfilelogger.exception.UserNotFoundException;
 import com.milk.restfilelogger.service.EventService;
 import com.milk.restfilelogger.service.FileService;
 import com.milk.restfilelogger.service.UserService;
+import com.milk.restfilelogger.utils.Utils;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,6 +35,7 @@ import java.util.stream.Collectors;
  * @author Jack Milk
  */
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/api/v1/executive")
 public class ExecutiveRestControllerV1 {
@@ -43,20 +43,10 @@ public class ExecutiveRestControllerV1 {
     private final UserService userService;
     private final FileService fileService;
     private final EventService eventService;
-    private final PasswordEncoder passwordEncoder;
-    @Value("${upload.path}")
-    private String defaultPath;
-
-    @Autowired
-    public ExecutiveRestControllerV1(UserService userService, FileService fileService, EventService eventService, PasswordEncoder passwordEncoder) {
-        this.userService = userService;
-        this.fileService = fileService;
-        this.eventService = eventService;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final Utils utils;
 
     @GetMapping("/users")
-    @JsonView(UserViews.FullView.class)
+    @JsonView(JsonViews.FullView.class)
     public ResponseEntity<?> getAllUsers() {
         return new ResponseEntity<>(userService.getAll()
                 .stream()
@@ -66,46 +56,12 @@ public class ExecutiveRestControllerV1 {
 
     @PostMapping("/users")
     @PreAuthorize("hasAuthority('level:high')")
-    public ResponseEntity<?> saveNewUser(@RequestBody RegisterRequestDTO newUser) {
-        String name = newUser.getName();
-        String email = newUser.getEmail();
-        String password = newUser.getPassword();
-
-        String regexEmail = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
-                + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
-        String regexName = "^[A-Za-z_][A-Za-z0-9_]{4,29}$";
-        String regexPassword = "^[A-Za-z_][A-Za-z0-9_]{3,29}$";
-
-        if (!email.matches(regexEmail)) {
-            return  new ResponseEntity<>("Invalid email", HttpStatus.FORBIDDEN);
-        }
-        if (!name.matches(regexName)) {
-            return  new ResponseEntity<>("Invalid name", HttpStatus.FORBIDDEN);
-        }
-        if (!password.matches(regexPassword)) {
-            return  new ResponseEntity<>("Invalid password", HttpStatus.FORBIDDEN);
-        }
-
-        UserEntity nUser = new UserEntity();
-        nUser.setEmail(email);
-        nUser.setName(name);
-        nUser.setPassword(passwordEncoder.encode(password));
-        nUser.setRole(Role.USER);
-        nUser.setStatus(Status.ACTIVE);
-
-        UserEntity savedUser;
-        try {
-            savedUser = userService.save(nUser);
-        } catch (UserAlreadyExistException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("User already exists!", HttpStatus.FORBIDDEN);
-        }
-
-        return new ResponseEntity<>(UserDTO.toDto(savedUser), HttpStatus.OK);
+    public ResponseEntity<?> saveNewUser(@RequestBody CredentialRequestDTO newUser) {
+        return utils.saveNewUser(newUser);
     }
 
     @GetMapping("/users/{id}")
-    @JsonView(UserViews.FullView.class)
+    @JsonView(JsonViews.FullView.class)
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         try {
             return new ResponseEntity<>(UserDTO.toDto(userService.getById(id)), HttpStatus.OK);
@@ -175,7 +131,7 @@ public class ExecutiveRestControllerV1 {
                 eventService.delete(e.getId());
             }
 
-            String pathToDeletingFiles = defaultPath + File.separator + currentUser.getName().replace(" ", "");
+            String pathToDeletingFiles = utils.getDefaultPath() + currentUser.getName().replace(" ", "");
             File delDir = new File(pathToDeletingFiles);
             FileUtils.deleteDirectory(delDir);
 
@@ -206,22 +162,8 @@ public class ExecutiveRestControllerV1 {
         if (file != null) {
 
             try {
-                String fileName = file.getOriginalFilename();
                 UserEntity user = userService.getById(id);
-                String uploadPath = defaultPath + File.separator + user.getName().replace(" ", "");
-
-                File uploadDir = new File(uploadPath);
-                if (!uploadDir.exists()){
-                    uploadDir.mkdir();
-                }
-                file.transferTo(new File(uploadPath + File.separator + fileName));
-
-                FileEntity newFile = new FileEntity(fileName, uploadPath);
-                EventEntity newEvent = new EventEntity(user, newFile, Occasion.UPLOAD);
-                fileService.save(newFile);
-                eventService.save(newEvent);
-                return ResponseEntity.ok("File upload successfully.");
-
+                return utils.uploadFile(user, file);
             } catch (UserNotFoundException e) {
                 e.printStackTrace();
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);

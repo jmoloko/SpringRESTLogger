@@ -17,15 +17,15 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class EventDTO {
-    @JsonView(EventViews.ShortView.class)
+    @JsonView(JsonViews.ShortView.class)
     private Long id;
-    @JsonView(EventViews.ShortView.class)
+    @JsonView(JsonViews.ShortView.class)
     private FileDTO file;
-    @JsonView(EventViews.ShortView.class)
+    @JsonView(JsonViews.ShortView.class)
     private Occasion occasion;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    @JsonView(EventViews.ShortView.class)
+    @JsonView(JsonViews.ShortView.class)
     private LocalDateTime date;
 
     public static EventDTO toDto(EventEntity entity){

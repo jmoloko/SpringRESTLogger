@@ -5,6 +5,8 @@ import com.milk.restfilelogger.exception.FileAlreadyExistException;
 import com.milk.restfilelogger.exception.FileNotFoundException;
 import com.milk.restfilelogger.repository.FileRepository;
 import com.milk.restfilelogger.service.FileService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,16 +15,16 @@ import java.util.List;
 /**
  * @author Jack Milk
  */
+/**
+ * TODO:
+ * Add logging
+ */
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class FileServiceImpl implements FileService {
 
-
     private final FileRepository fileRepository;
-
-    @Autowired
-    public FileServiceImpl(FileRepository fileRepository) {
-        this.fileRepository = fileRepository;
-    }
 
     @Override
     public List<FileEntity> getAll() {

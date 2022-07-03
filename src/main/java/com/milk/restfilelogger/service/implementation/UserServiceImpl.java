@@ -7,6 +7,9 @@ import com.milk.restfilelogger.exception.UserAlreadyExistException;
 import com.milk.restfilelogger.exception.UserNotFoundException;
 import com.milk.restfilelogger.repository.UserRepository;
 import com.milk.restfilelogger.service.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +19,16 @@ import java.util.stream.Collectors;
 /**
  * @author Jack Milk
  */
+/**
+ * TODO:
+ * Add logging
+ */
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public List<UserEntity> getAll() {

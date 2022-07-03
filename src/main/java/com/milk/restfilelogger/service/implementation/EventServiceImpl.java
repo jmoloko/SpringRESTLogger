@@ -4,6 +4,8 @@ import com.milk.restfilelogger.entity.EventEntity;
 import com.milk.restfilelogger.exception.EventNotFoundException;
 import com.milk.restfilelogger.repository.EventRepository;
 import com.milk.restfilelogger.service.EventService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,15 +14,18 @@ import java.util.List;
 /**
  * @author Jack Milk
  */
+
+/**
+ *
+ * TODO:
+ * Add logging
+ */
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
-
-    @Autowired
-    public EventServiceImpl(EventRepository eventRepository) {
-        this.eventRepository = eventRepository;
-    }
 
     @Override
     public List<EventEntity> getAll() {
