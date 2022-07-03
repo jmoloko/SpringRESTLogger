@@ -13,7 +13,7 @@ Implemented by the REST API, which interacts with the file storage and provides 
 * Moderator - add and delete files
 * User - only reading all data except user
 
-**Technology:** _Java, MySQL, Spring (Ioc, Data, Security), ~~AWS SDK~~, Circleci, Travis, Docker, Junit, Mockito, Gradle._
+**Technology:** _Java, MySQL, Spring (Ioc, Data, Security), ~~AWS SDK~~, Travis, Docker, Junit, Mockito, Gradle._
 
 **Run in Docker:**
 ```shell
