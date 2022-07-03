@@ -1,18 +1,19 @@
 language: java
-
 jdk:
   - oraclejdk11
 
-before_script:
-  - chmod +x gradlew
-
-script:
-  - ./gradlew check
-  - ./gradlew codeCoverageReport
+sudo: false
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 
+notifications:
+  email:
+    recipients:
+      - jackmoloko@yandex.ru
+    on_success: never
+    on_failure: always
+
 env:
   global:
-    - CODECOV_TOKEN=2b10488b-f06d-491a-9d13-dba3e984708c
+    - CODECOV_TOKEN='2b10488b-f06d-491a-9d13-dba3e984708c'
