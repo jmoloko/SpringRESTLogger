@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Jack Milk
@@ -51,9 +52,15 @@ public class AuthRestControllerV1 {
         try {
             String email = request.getEmail();
             String password = request.getPassword();
+            UserEntity userEntity = userRepository.getByEmail(email);
+
+            if (userEntity == null || userEntity.getStatus().name().equals("DELETED")){
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-            UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
             String token = jwtTokenProvider.createToken(email, userEntity.getRole().name());
+
             Map<Object, Object> response = new HashMap<>();
             response.put("email", email);
             response.put("token", token);
