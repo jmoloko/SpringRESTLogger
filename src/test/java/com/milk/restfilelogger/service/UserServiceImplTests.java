@@ -55,13 +55,22 @@ public class UserServiceImplTests {
         return newUser;
     }
 
+    private UserEntity getNewUserStatus(){
+        UserEntity newUser = new UserEntity();
+        newUser.setId(1L);
+        newUser.setEmail("johndoe@yahoo.com");
+        newUser.setName("JohnDoe");
+        newUser.setRole(Role.ADMIN);
+        newUser.setStatus(Status.DELETED);
+        return newUser;
+    }
+
     private List<UserEntity> getUsers(){
-        List<UserEntity> users = Stream.of(
+        return Stream.of(
             new UserEntity("johndoe@yahoo.com", "JohnDoe", Role.ADMIN, Status.ACTIVE),
             new UserEntity("mikesnow@mail.com", "MikeSnow", Role.MODERATOR, Status.ACTIVE),
             new UserEntity("testUser@gmail.com", "TestUser", Role.USER, Status.ACTIVE)
         ).collect(Collectors.toList());
-        return users;
     }
 
     @Test
@@ -108,10 +117,15 @@ public class UserServiceImplTests {
     }
 
     @Test
-    public void updateUserTest() throws UserAlreadyExistException {
-//        when(userRepository.findById(1L)).thenReturn(Optional.of(getUser()));
-//        when(userRepository.save(Mockito.any(UserEntity.class))).thenReturn(getNewUser());
-//        assertEquals(1L, userService.save(getUser()).getId());
+    public void updateUserTest() throws UserAlreadyExistException, UserNotFoundException {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(getUser()));
+        when(userRepository.save(Mockito.any(UserEntity.class))).thenReturn(getNewUser());
+        assertEquals("John Doe", userService.update(getNewUser(), getUser().getId()).getName());
+        assertEquals(1L, userService.update(getNewUser(), getUser().getId()).getId());
+        assertEquals("MODERATOR", userService.update(getNewUser(), getUser().getId()).getRole().name());
+        assertEquals("DELETED", userService.update(getNewUser(), getUser().getId()).getStatus().name());
+
+        verify(userRepository, times(4)).save(Mockito.any(UserEntity.class));
     }
 
     @Test
@@ -126,10 +140,14 @@ public class UserServiceImplTests {
     }
 
     @Test
-    public void deleteUserTest() {
-        /**
-         * TODO:
-         * Implement deleteUserTest
-         */
+    public void deleteUserTest() throws UserAlreadyExistException {
+        when(userRepository.save(Mockito.any(UserEntity.class))).thenReturn(getNewUserStatus());
+        assertEquals("DELETED", userService.save(getNewUserStatus()).getStatus().name());
+        assertEquals("ADMIN", userService.save(getNewUserStatus()).getRole().name());
+        assertEquals("JohnDoe", userService.save(getNewUserStatus()).getName());
+        assertEquals("johndoe@yahoo.com", userService.save(getNewUserStatus()).getEmail());
+        assertEquals(1L, userService.save(getNewUserStatus()).getId());
+
+        verify(userRepository, times(5)).save(Mockito.any(UserEntity.class));
     }
 }

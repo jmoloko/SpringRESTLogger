@@ -45,12 +45,11 @@ public class EventServiceImplTests {
     }
 
     public List<FileEntity> getFiles() {
-        List<FileEntity> files = Stream.of(
+        return Stream.of(
                 new FileEntity("test_file.txt", "/path/to/file"),
                 new FileEntity("new_file.txt", "/path/to/file"),
                 new FileEntity("some_file.txt", "/path/to/file")
         ).collect(Collectors.toList());
-        return files;
     }
 
     public EventEntity getEvent() {

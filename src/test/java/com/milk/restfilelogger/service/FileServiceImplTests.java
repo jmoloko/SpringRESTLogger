@@ -1,7 +1,6 @@
 package com.milk.restfilelogger.service;
 
 import com.milk.restfilelogger.entity.FileEntity;
-import com.milk.restfilelogger.entity.UserEntity;
 import com.milk.restfilelogger.exception.FileAlreadyExistException;
 import com.milk.restfilelogger.exception.FileNotFoundException;
 import com.milk.restfilelogger.repository.FileRepository;
@@ -51,12 +50,11 @@ public class FileServiceImplTests {
     }
 
     public List<FileEntity> getFiles() {
-        List<FileEntity> files = Stream.of(
+        return Stream.of(
                 new FileEntity("test_file.txt", "/path/to/file"),
                 new FileEntity("new_file.txt", "/path/to/file"),
                 new FileEntity("some_file.txt", "/path/to/file")
         ).collect(Collectors.toList());
-        return files;
     }
 
     @Test
@@ -100,11 +98,13 @@ public class FileServiceImplTests {
 
     @Test
     public void renameFileTest() throws FileAlreadyExistException, FileNotFoundException {
+        when(fileRepository.findById(1L)).thenReturn(Optional.of(getFile()));
+        when(fileRepository.save(Mockito.any(FileEntity.class))).thenReturn(getNewFile());
+        assertEquals("new_test_file.txt", fileService.renameFile(getNewFile()).getName());
+        assertEquals(1L, fileService.renameFile(getNewFile()).getId());
+        assertEquals("/path/to/file", fileService.renameFile(getNewFile()).getPath());
 
-        /**
-         * TODO:
-         * Implement renameFileTest
-         */
+        verify(fileRepository, times(3)).save(Mockito.any(FileEntity.class));
 
     }
 
